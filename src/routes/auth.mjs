@@ -1,6 +1,5 @@
 import express from 'express';
 import passport from 'passport';
-//import { createUser, findUserByEmail, users } from '../data/usersBackup.mjs';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
@@ -80,9 +79,8 @@ authRouter.post('/forgot', async (req, res) => {
         return res.status(500).send('Помилка сервера: База даних не підключена.');
     }
 
-    const { email } = req.body; // <<< ТЕПЕР ЦЕЙ РЯДОК БУДЕ ПРАЦЮВАТИ, оскільки це POST-запит з тілом
+    const { email } = req.body;
 
-    // Перевірка на наявність email у тілі запиту
     if (!email) {
         const theme = req.cookies.theme || 'light';
         return res.render('auth/forgot', { message: 'Будь ласка, введіть Email.', theme });
@@ -90,20 +88,18 @@ authRouter.post('/forgot', async (req, res) => {
 
     try {
         const user = await findUserByEmail(db, email);
-        const theme = req.cookies.theme || 'light'; // Залишаємо визначення theme тут
+        const theme = req.cookies.theme || 'light';
 
         if (!user) {
-            // Важливо: не повідомляйте, чи існує email з міркувань безпеки
-            // Просто поверніть загальне повідомлення про успіх, щоб уникнути перебору email-ів.
             console.log(`Спроба скидання пароля для неіснуючого email: ${email}`);
             return res.render('auth/forgot', { message: 'Якщо цей email зареєстрований, ви отримаєте лист з інструкціями.', theme });
         }
 
         const token = crypto.randomBytes(32).toString('hex');
         user.resetToken = token;
-        user.resetTokenExpiry = Date.now() + 3600000; // Токен дійсний 1 годину (3600000 ms)
+        user.resetTokenExpiry = Date.now() + 3600000;
 
-        await updateUserInDb(db, user); // Оновлюємо користувача в БД з новими полями токена
+        await updateUserInDb(db, user);
 
         const testAccount = await nodemailer.createTestAccount();
         const transporter = nodemailer.createTransport({
@@ -131,7 +127,7 @@ authRouter.post('/forgot', async (req, res) => {
 
     } catch (error) {
         console.error('Помилка при обробці запиту на скидання пароля:', error);
-        const theme = req.cookies.theme || 'light'; // Залишаємо визначення theme тут
+        const theme = req.cookies.theme || 'light';
         res.status(500).render('auth/forgot', { message: 'Виникла помилка при обробці вашого запиту.', theme });
     }
 });
@@ -142,27 +138,16 @@ authRouter.get('/forgot', (req, res) => {
 });
 
 authRouter.get('/reset/:token', async (req, res) => {
-    // const { token } = req.params;
-    // const theme = req.cookies.theme || 'light';
-
-    // const user = users.find(u => u.resetToken === token && u.resetTokenExpiry && u.resetTokenExpiry > Date.now());
-
-    // if (!user) {
-    //     return res.render('auth/reset', { message: 'Посилання для скидання пароля недійсне або термін його дії закінчився.', theme, token: null });
-    // }
-
-    // res.render('auth/reset', { token: token, theme, message: null });
     const db = req.app.locals.db;
     if (!db) { return res.status(500).send('Помилка сервера: База даних не підключена.'); }
 
     const { token } = req.params;
     const theme = req.cookies.theme || 'light';
 
-    // Шукаємо користувача в БД за токеном
     const usersCollection = db.collection('users');
     const user = await usersCollection.findOne({
         resetToken: token,
-        resetTokenExpiry: { $gt: Date.now() } // $gt - greater than (більше ніж поточний час)
+        resetTokenExpiry: { $gt: Date.now() }
     });
 
     if (!user) {
@@ -173,25 +158,6 @@ authRouter.get('/reset/:token', async (req, res) => {
 });
 
 authRouter.post('/reset/:token', async (req, res) => {
-    // const { token } = req.params;
-    // const { password } = req.body;
-    // const theme = req.cookies.theme || 'light';
-
-    // const user = users.find(u => u.resetToken === token && u.resetTokenExpiry && u.resetTokenExpiry > Date.now());
-
-    // if (!user) {
-    //     return res.render('auth/reset', { message: 'Посилання для скидання пароля недійсне або термін його дії закінчився.', theme, token: null });
-    // }
-
-    // if (!password || password.length < 6) {
-    //     return res.render('auth/reset', { message: 'Пароль повинен бути не менше 6 символів.', theme, token });
-    // }
-
-    // user.password = await bcrypt.hash(password, 10);
-    // user.resetToken = null;
-    // user.resetTokenExpiry = null;
-
-    // res.redirect('/auth/login');
     const db = req.app.locals.db;
     if (!db) { return res.status(500).send('Помилка сервера: База даних не підключена.'); }
 
@@ -199,7 +165,6 @@ authRouter.post('/reset/:token', async (req, res) => {
     const { password } = req.body;
     const theme = req.cookies.theme || 'light';
 
-    // Шукаємо користувача в БД за токеном
     const usersCollection = db.collection('users');
     const user = await usersCollection.findOne({
         resetToken: token,
@@ -214,15 +179,13 @@ authRouter.post('/reset/:token', async (req, res) => {
         return res.render('auth/reset', { message: 'Пароль повинен бути не менше 6 символів.', theme, token });
     }
 
-    // Хешуємо новий пароль
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Оновлюємо користувача в БД
     user.password = hashedPassword;
     user.resetToken = null;
     user.resetTokenExpiry = null;
 
-    await updateUserInDb(db, user); // Використовуємо функцію для оновлення в БД
+    await updateUserInDb(db, user);
 
     res.redirect('/auth/login');
 });

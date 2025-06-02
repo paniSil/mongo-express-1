@@ -81,8 +81,5 @@ async function connectToServer() {
 }
 
 const server = connectToServer()
-// const server = app.listen(PORT, () => {
-//     console.log(`Сервер запущений за адресою http://localhost:${PORT}`)
-// })
 
 export { server, app };

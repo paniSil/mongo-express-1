@@ -8,6 +8,8 @@ build/
 coverage/
 requests/
 src/__test__/
+src/data/
+
 
 # Files
 .DS_Store
@@ -15,4 +17,4 @@ src/__test__/
 *.js.map
 *.d.ts
 src/ASSIGNMENT.md
-
+.env

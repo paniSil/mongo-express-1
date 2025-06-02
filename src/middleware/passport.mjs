@@ -14,7 +14,7 @@ export const initPassport = (db) => {
             const user = await findUserById(db, id);
             done(null, user);
         } catch (err) {
-            console.error("Помилка при десеріалізації користувача:", err);
+            console.error("Deserialize user error", err);
             done(err);
         }
     });
@@ -24,12 +24,12 @@ export const initPassport = (db) => {
         try {
             const user = await findUserByEmail(db, email);
             if (!user) {
-                return done(null, false, { message: 'Неправильний email або пароль.' });
+                return done(null, false, { message: 'Wrong email or password' });
             }
 
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
-                return done(null, false, { message: 'Неправильний email або пароль.' });
+                return done(null, false, { message: 'Wrong email or password' });
             }
 
             return done(null, user);

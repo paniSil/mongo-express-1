@@ -53,7 +53,6 @@ export async function postForgot(req, res) {
     user.resetToken = token;
     user.resetTokenExpiry = Date.now() + 3600000; // 1 година
 
-    // Створення тестового акаунта Ethereal 
     const testAccount = await nodemailer.createTestAccount();
     const transporter = nodemailer.createTransport({
         host: 'smtp.ethereal.email',
