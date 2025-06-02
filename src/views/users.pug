@@ -33,7 +33,7 @@ html(lang="en")
                   b Age: 
                   span=user.age
               div
-                a.btn.btn-primary.ml-4.theme-btn(href=`users/${user.id}`) Profile
+                a.btn.btn-primary.ml-4.theme-btn(href=`users/${user._id}`) Profile
               br
       if user
         div.mr-3.mt-4 Current user: #{user.email}

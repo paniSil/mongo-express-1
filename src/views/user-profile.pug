@@ -8,12 +8,12 @@ html(lang="en")
 
   body(class=theme + '-theme-body')
     .container(class=theme + '-theme-container')
-      h1.mt-4 User Profile #{userProfile.id} (PUG)
+      h1.mt-4 User Profile #{userProfile._id} (PUG)
 
       if userProfile
         div 
           strong Id: 
-          span=userProfile.id
+          span=userProfile._id
         div 
           strong Name: 
           span=userProfile.name

@@ -16,12 +16,4 @@ const validateParamsUserId = celebrate({
     })
 })
 
-// const validateUserInput = (req, res, next) => {
-//     const { name } = req.body
-//     if (!name || name.trim() === '') {
-//         return res.status(400).send('Bad Request: User name is required and cannot be empty.')
-//     }
-//     next()
-// }
-
 export { validateUserBody, validateParamsUserId }
