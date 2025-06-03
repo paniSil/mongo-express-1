@@ -40,8 +40,8 @@ authRouter.post('/register', async (req, res) => {
 
     const { name, email, password, age } = req.body;
 
-    if (!name || !email || !password || !age) {
-        return res.status(400).send('Всі поля обов\'язкові для реєстрації.');
+    if (!name || !email || !password) {
+        return res.status(400).send('Поля позначені * обов\'язкові для реєстрації.');
     }
 
     try {
