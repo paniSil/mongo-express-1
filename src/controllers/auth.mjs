@@ -1,12 +1,8 @@
-import jwt from 'jsonwebtoken';
-import { findUserByEmail, createUser, comparePasswords, users } from '../data/usersBackup.mjs';
+import { findUserByEmail, createUser, users } from '../data/usersBackup.mjs';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
 import bcrypt from 'bcrypt';
 import passport from 'passport';
-
-const JWT_SECRET = 'secret';
-const JWT_EXPIRES_IN = '1h';
 
 export async function register(req, res) {
     const { name, email, password, age } = req.body;

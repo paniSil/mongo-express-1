@@ -10,7 +10,6 @@ requests/
 src/__test__/
 src/data/
 
-
 # Files
 .DS_Store
 *.log
