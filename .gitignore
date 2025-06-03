@@ -17,3 +17,4 @@ src/data/
 *.d.ts
 src/ASSIGNMENT.md
 .env
+src/controllers/auth.mjs
