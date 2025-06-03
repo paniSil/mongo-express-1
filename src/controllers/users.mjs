@@ -58,8 +58,6 @@ const getUserByIdHandler = async (req, res) => {
             return res.status(500).json({ message: 'Error: DB is not connected' });
         }
         const userId = req.params.id;
-        console.log('Attempting to get user with ID:', userId, 'Type:', typeof userId); // <<< ДОДАЙТЕ ЦЕ
-        console.log('Is valid ObjectId string?', ObjectId.isValid(userId)); // <<< І ЦЕ
 
         const usersCollection = db.collection('users');
 
@@ -67,7 +65,6 @@ const getUserByIdHandler = async (req, res) => {
         const theme = req.cookies.theme || 'light';
 
         if (userProfile) {
-            console.log('User found:', userProfile);
             res.render('user-profile.pug', { userProfile: userProfile, theme: theme, user: req.user });
         } else {
             res.status(404).send('User not found');
